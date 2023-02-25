@@ -1,0 +1,188 @@
+import React, { useEffect, useState } from "react";
+import Axios from "axios";
+import useDebounce from "../hooks/useDebounce";
+import Navbar from "../components/Navbar";
+import ImageCard from "../components/ImageCard";
+import Modal from "../components/Modal";
+import homeImg from "../assets/pramod-tiwari-Q6t870mqJwo-unsplash.jpg";
+
+function Home() {
+  const [theme, setTheme] = useState("light");
+  const [response, setResponse] = useState([]);
+  const [page, setPage] = useState(1);
+  const [showModal, setShowModal] = useState(false);
+  const [modalId, setModalId] = useState(null);
+  const [modalData, setModalData] = useState({});
+
+  const [searchInput, setSearchInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [searchPage, setSearchPage] = useState(1);
+  const [searchPagelimit, setSearchPagelimit] = useState(1);
+  const debouncedSearch = useDebounce(searchInput, 500);
+
+  // Get Images Functionality
+  const getImages = async () => {
+    const getresponse = await Axios.get(
+      `https://api.unsplash.com/photos/?page=${page}&client_id=PWmJ8URqnrfVvKRlhbIK32UUP-ML4qjtDW6mxjCOs7k`
+    );
+    const data = getresponse.data;
+    const filteredData = data.map((item) => {
+      return {
+        imgId: item.id,
+        user: item.user.name,
+        username: item.user.username,
+        userImg: item.user.profile_image.small,
+        description: item.alt_description,
+        img_thumb: item.urls.small,
+        img: item.urls.regular,
+        likes: item.likes,
+        img_download: item.links.download,
+      };
+    });
+    if (debouncedSearch === "" && page === 1) {
+      setResponse(filteredData);
+    } else if (page > 1) {
+      const newData = [...response, ...filteredData];
+      setResponse(newData);
+    }
+  };
+
+  useEffect(() => {
+    getImages();
+  }, [page]);
+
+  // Debounce Search Functionality
+  const currentSearchValue = (searchInputValue) => {
+    setSearchInput(searchInputValue);
+  };
+
+  useEffect(() => {
+    if (debouncedSearch !== "") {
+      async function search() {
+        setLoading(true);
+        const fetchedData = await Axios.get(
+          `https://api.unsplash.com/search/photos?page=${searchPage}&query=${debouncedSearch}&client_id=PWmJ8URqnrfVvKRlhbIK32UUP-ML4qjtDW6mxjCOs7k`
+        );
+        setSearchPagelimit(fetchedData.data.total_pages);
+        const filteredData = fetchedData.data.results.map((item) => {
+          return {
+            imgId: item.id,
+            user: item.user.name,
+            username: item.user.username,
+            userImg: item.user.profile_image.small,
+            description: item.alt_description,
+            img_thumb: item.urls.small,
+            img: item.urls.regular,
+            likes: item.likes,
+            img_download: item.links.download,
+          };
+        });
+        if (searchPage === 1) {
+          setResponse(filteredData);
+        } else {
+          const newData = [...response, ...filteredData];
+          setResponse(newData);
+        }
+        setLoading(false);
+      }
+      search();
+    } else {
+      if (searchPage > 1) setSearchPage(1);
+      if (page > 1) setPage(1);
+      else getImages();
+    }
+  }, [debouncedSearch, searchPage]);
+
+  // Modal Functionality
+  useEffect(() => {
+    if (modalId) {
+      getModalData();
+    }
+  }, [modalId]);
+
+  const getModalData = () => {
+    if (showModal) {
+      const fetchedData = response.find((item) => item.imgId === modalId);
+      setModalData(fetchedData);
+    }
+  };
+
+  const handleClick = (currrentImageId) => {
+    setModalId(currrentImageId);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  // Page End Scroll Functionality
+  window.onscroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      if (debouncedSearch === "") {
+        setPage(page + 1);
+      } else {
+        if (searchPagelimit > searchPage) {
+          setSearchPage(searchPage + 1);
+        }
+      }
+      console.log(page);
+    }
+  };
+
+  // Theme Switch Functionality
+  useEffect(() => {
+    if (theme === "light") {
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+    }
+  }, [theme]);
+
+  const handleThemeSwitch = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
+  return (
+    <div className="flex flex-col bg-white dark:bg-[#232323]">
+      <Navbar search={currentSearchValue} themeSwitch={handleThemeSwitch} />
+      <div className="relative flex justify-center items-center">
+        <img
+          src={homeImg}
+          alt="..."
+          className="object-cover object-center opacity-95 w-full h-[50vh]"
+        />
+        <div className="absolute flex flex-col items-center text-white text-3xl font-extrabold tracking-wide">
+          <span className="mb-4">Download High Quality Images by creators</span>
+          <span>Over 2.4 million+ stock Images by our talented community</span>
+        </div>
+      </div>
+      <div className="flex flex-wrap justify-center items-center mx-40 mt-1 mb-20">
+        {showModal && (
+          <Modal closeModal={closeModal} data={modalData} theme={theme} />
+        )}
+        {response.length > 0 &&
+          response.map((item, index) => {
+            return (
+              <ImageCard
+                key={index}
+                imgId={item.imgId}
+                onOnModal={handleClick}
+                name={item.user}
+                username={item.username}
+                userImg={item.userImg}
+                img_thumb={item.img_thumb}
+                likes={item.likes}
+                theme={theme}
+              />
+            );
+          })}
+      </div>
+    </div>
+  );
+}
+
+export default Home;
