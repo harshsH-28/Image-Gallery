@@ -10,7 +10,7 @@ function ImageCard(props) {
   return (
     <div
       onClick={handleClick}
-      className="flex flex-col w-[166px] h-[112.05px] md:w-[346px] md:h-[270px] my-20 mx-1 md:mx-10 hover:shadow-2xl transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer"
+      className="flex flex-col flex-1 flex-grow md:flex-auto xl:flex-initial w-[75vw] h-[10vh] md:w-[346px] md:h-[270px] my-20 mx-5 xl:mx-10 hover:shadow-2xl transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer"
     >
       <img
         src={props.img_thumb}
