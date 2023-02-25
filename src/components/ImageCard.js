@@ -10,17 +10,21 @@ function ImageCard(props) {
   return (
     <div
       onClick={handleClick}
-      className="flex flex-col w-[346px] h-[270px] my-20 mx-10 hover:shadow-2xl transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer"
+      className="flex flex-col w-[166px] h-[112.05px] md:w-[346px] md:h-[270px] my-20 mx-1 md:mx-10 hover:shadow-2xl transition-all duration-300 ease-in-out hover:scale-110 cursor-pointer"
     >
       <img
         src={props.img_thumb}
         alt=""
-        className="rounded-t-lg object-cover w-full h-[20em]"
+        className="rounded-t-lg object-cover w-full h-[10em] md:h-[20em]"
       />
       <div className="bg-white dark:bg-[#141414] flex justify-between items-center px-2 py-4 rounded-b-lg shadow-xl">
         <div className="text-[#4F4F4F] dark:text-[#E5E5E5] flex justify-center items-center">
-          <img src={props.userImg} alt="" className="rounded-3xl w-8 mr-2" />
-          <div className="flex flex-col text-sm">
+          <img
+            src={props.userImg}
+            alt=""
+            className="rounded-3xl w-4 mr-1 md:w-8 md:mr-2"
+          />
+          <div className="flex flex-col text-xs md:text-sm">
             <span className="font-semibold">{props.name}</span>
             <span>@{props.username}</span>
           </div>
@@ -29,9 +33,9 @@ function ImageCard(props) {
           <img
             src={props.theme === "light" ? likesBlack : likesWhite}
             alt="..."
-            className="w-5 mr-2"
+            className="w-4 mr-1 md:w-5 md:mr-2"
           />
-          <span>{props.likes} Likes</span>
+          <span className="text-xs md:text-base">{props.likes} Likes</span>
         </div>
       </div>
     </div>

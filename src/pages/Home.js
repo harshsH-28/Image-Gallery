@@ -4,7 +4,7 @@ import useDebounce from "../hooks/useDebounce";
 import Navbar from "../components/Navbar";
 import ImageCard from "../components/ImageCard";
 import Modal from "../components/Modal";
-import homeImg from "../assets/pramod-tiwari-Q6t870mqJwo-unsplash.jpg";
+import homeImg from "../assets/david-marcu-78A265wPiO4-unsplash.jpg";
 
 function Home() {
   const [theme, setTheme] = useState("light");
@@ -155,12 +155,23 @@ function Home() {
           alt="..."
           className="object-cover object-center opacity-95 w-full h-[50vh]"
         />
-        <div className="absolute flex flex-col items-center text-white text-3xl font-extrabold tracking-wide">
-          <span className="mb-4">Download High Quality Images by creators</span>
+        <div className="absolute flex flex-col items-center text-white text-xl text-center md:text-3xl font-extrabold tracking-wide">
+          <div className="block w-[15em] mb-8 md:hidden">
+            <input
+              type="text"
+              className="w-full h-[2.8em] text-base p-4 outline-none font-normal placeholder:text-gray-500 dark:placeholder:text-white rounded-lg shadow-xl text-black dark:bg-[#858484]"
+              value={searchInput}
+              placeholder="Search for images here..."
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+          </div>
+          <span className="mb-2 md:mb-4">
+            Download High Quality Images by creators
+          </span>
           <span>Over 2.4 million+ stock Images by our talented community</span>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center items-center mx-40 mt-1 mb-20">
+      <div className="flex flex-wrap justify-center items-center mx-10 md:mx-40 mt-1 mb-10 md:mb-20">
         {showModal && (
           <Modal closeModal={closeModal} data={modalData} theme={theme} />
         )}
