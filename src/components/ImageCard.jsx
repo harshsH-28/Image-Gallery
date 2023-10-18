@@ -34,7 +34,9 @@ function ImageCard(props) {
             alt="..."
             className="w-4 mr-1 md:w-5 md:mr-2"
           />
-          <span className="text-xs md:text-base">{props.likes} Likes</span>
+          <span className="text-xs md:text-base">
+            {props.likes} <span className="hidden md:inline">Likes</span>
+          </span>
         </div>
       </div>
     </div>
