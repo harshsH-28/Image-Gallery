@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import ImageCard from "../components/ImageCard";
 import Modal from "../components/Modal";
 import homeImg from "../assets/david-marcu-78A265wPiO4-unsplash.jpg";
+import unsplash_Api from "../services/api";
 
 function Home() {
   const [theme, setTheme] = useState("light");
@@ -19,7 +20,7 @@ function Home() {
   const [searchPage, setSearchPage] = useState(1);
   const [searchPagelimit, setSearchPagelimit] = useState(1);
   const debouncedSearch = useDebounce(searchInput, 500);
-
+  const [random, setRandom] = useState(0);
   // Get Images Functionality
   const getImages = async () => {
     const getresponse = await Axios.get(
@@ -60,9 +61,7 @@ function Home() {
     if (debouncedSearch !== "") {
       async function search() {
         setLoading(true);
-        const fetchedData = await Axios.get(
-          `https://api.unsplash.com/search/photos?page=${searchPage}&query=${debouncedSearch}&client_id=PWmJ8URqnrfVvKRlhbIK32UUP-ML4qjtDW6mxjCOs7k`
-        );
+        const fetchedData = await unsplash_Api(searchPage, debouncedSearch);
         setSearchPagelimit(fetchedData.data.total_pages);
         const filteredData = fetchedData.data.results.map((item) => {
           return {
