@@ -1,4 +1,3 @@
-import React from "react";
 import likesBlack from "../assets/black_like.png";
 import likesWhite from "../assets/white_like.png";
 

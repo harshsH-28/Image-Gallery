@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import Axios from "axios";
+import { useEffect, useState } from "react";
 import useDebounce from "../hooks/useDebounce";
-import Navbar from "../components/Navbar";
-import ImageCard from "../components/ImageCard";
-import Modal from "../components/Modal";
+import Navbar from "../components/Navbar.jsx";
+import ImageCard from "../components/ImageCard.jsx";
+import Modal from "../components/Modal.jsx";
 import homeImg from "../assets/david-marcu-78A265wPiO4-unsplash.jpg";
-import unsplash_Api from "../services/api";
+import { unsplash_Api, getUnsplashImages } from "../services/api";
 
 function Home() {
   const [theme, setTheme] = useState("light");
@@ -21,11 +20,10 @@ function Home() {
   const [searchPagelimit, setSearchPagelimit] = useState(1);
   const debouncedSearch = useDebounce(searchInput, 500);
   const [random, setRandom] = useState(0);
+
   // Get Images Functionality
   const getImages = async () => {
-    const getresponse = await Axios.get(
-      `https://api.unsplash.com/photos/?page=${page}&client_id=PWmJ8URqnrfVvKRlhbIK32UUP-ML4qjtDW6mxjCOs7k`
-    );
+    const getresponse = await getUnsplashImages(page);
     const data = getresponse.data;
     const filteredData = data.map((item) => {
       return {
@@ -57,33 +55,34 @@ function Home() {
     setSearchInput(searchInputValue);
   };
 
+  const search = async () => {
+    setLoading(true);
+    const fetchedData = await unsplash_Api(searchPage, debouncedSearch);
+    setSearchPagelimit(fetchedData.data.total_pages);
+    const filteredData = fetchedData.data.results.map((item) => {
+      return {
+        imgId: item.id,
+        user: item.user.name,
+        username: item.user.username,
+        userImg: item.user.profile_image.small,
+        description: item.alt_description,
+        img_thumb: item.urls.small,
+        img: item.urls.regular,
+        likes: item.likes,
+        img_download: item.links.download,
+      };
+    });
+    if (searchPage === 1) {
+      setResponse(filteredData);
+    } else {
+      const newData = [...response, ...filteredData];
+      setResponse(newData);
+    }
+    setLoading(false);
+  };
+
   useEffect(() => {
     if (debouncedSearch !== "") {
-      async function search() {
-        setLoading(true);
-        const fetchedData = await unsplash_Api(searchPage, debouncedSearch);
-        setSearchPagelimit(fetchedData.data.total_pages);
-        const filteredData = fetchedData.data.results.map((item) => {
-          return {
-            imgId: item.id,
-            user: item.user.name,
-            username: item.user.username,
-            userImg: item.user.profile_image.small,
-            description: item.alt_description,
-            img_thumb: item.urls.small,
-            img: item.urls.regular,
-            likes: item.likes,
-            img_download: item.links.download,
-          };
-        });
-        if (searchPage === 1) {
-          setResponse(filteredData);
-        } else {
-          const newData = [...response, ...filteredData];
-          setResponse(newData);
-        }
-        setLoading(false);
-      }
       search();
     } else {
       if (searchPage > 1) setSearchPage(1);
@@ -133,6 +132,11 @@ function Home() {
   };
 
   // Theme Switch Functionality
+
+  const handleThemeSwitch = () => {
+    setTheme(theme === "light" ? "dark" : "light");
+  };
+
   useEffect(() => {
     if (theme === "light") {
       document.documentElement.classList.remove("dark");
@@ -140,10 +144,6 @@ function Home() {
       document.documentElement.classList.add("dark");
     }
   }, [theme]);
-
-  const handleThemeSwitch = () => {
-    setTheme(theme === "light" ? "dark" : "light");
-  };
 
   return (
     <div className="flex flex-col bg-white dark:bg-[#232323]">
