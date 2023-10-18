@@ -38,7 +38,7 @@ function Navbar(props) {
         </a>
       </div>
       <div className="w-8 text-sm font-semibold flex justify-center items-center md:flex-none md:text-base md:w-fit">
-        <MaterialUISwitch sx={{ m: 1 }} onClick={props.themeSwitch} />
+        <MaterialUISwitch sx={{ m: 1 }} onClick={props.handleThemeSwitch} />
         <span>Dark Mode</span>
       </div>
       <div className="block md:hidden">

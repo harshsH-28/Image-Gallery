@@ -93,7 +93,9 @@ function Home() {
 
   // Modal Functionality
   useEffect(() => {
-    if (modalId) {
+    if (!modalId) {
+      setModalData({});
+    } else {
       getModalData();
     }
   }, [modalId]);
@@ -112,6 +114,7 @@ function Home() {
 
   const closeModal = () => {
     setShowModal(false);
+    setModalId(null);
   };
 
   // Page End Scroll Functionality
@@ -132,9 +135,10 @@ function Home() {
   };
 
   // Theme Switch Functionality
-
   const handleThemeSwitch = () => {
+    console.log("previous" + theme);
     setTheme(theme === "light" ? "dark" : "light");
+    console.log("after" + theme);
   };
 
   useEffect(() => {
@@ -147,7 +151,10 @@ function Home() {
 
   return (
     <div className="flex flex-col bg-white dark:bg-[#232323]">
-      <Navbar search={currentSearchValue} themeSwitch={handleThemeSwitch} />
+      <Navbar
+        search={currentSearchValue}
+        handleThemeSwitch={handleThemeSwitch}
+      />
       <div className="relative flex justify-center items-center">
         <img
           src={homeImg}
@@ -170,27 +177,31 @@ function Home() {
           <span>Over 2.4 million+ stock Images by our talented community</span>
         </div>
       </div>
-      <div className="flex flex-wrap justify-center items-center mx-10 md:mx-40 mt-1 mb-10 md:mb-20">
-        {showModal && (
-          <Modal closeModal={closeModal} data={modalData} theme={theme} />
-        )}
-        {response.length > 0 &&
-          response.map((item, index) => {
-            return (
-              <ImageCard
-                key={index}
-                imgId={item.imgId}
-                onOnModal={handleClick}
-                name={item.user}
-                username={item.username}
-                userImg={item.userImg}
-                img_thumb={item.img_thumb}
-                likes={item.likes}
-                theme={theme}
-              />
-            );
-          })}
-      </div>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="flex flex-wrap justify-center items-center mx-10 md:mx-40 mt-1 mb-10 md:mb-20">
+          {showModal && (
+            <Modal closeModal={closeModal} data={modalData} theme={theme} />
+          )}
+          {response.length > 0 &&
+            response.map((item, index) => {
+              return (
+                <ImageCard
+                  key={index}
+                  imgId={item.imgId}
+                  onOnModal={handleClick}
+                  name={item.user}
+                  username={item.username}
+                  userImg={item.userImg}
+                  img_thumb={item.img_thumb}
+                  likes={item.likes}
+                  theme={theme}
+                />
+              );
+            })}
+        </div>
+      )}
     </div>
   );
 }
