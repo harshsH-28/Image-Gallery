@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar.jsx";
 import ImageCard from "../components/ImageCard.jsx";
 import Modal from "../components/Modal.jsx";
 import homeImg from "../assets/david-marcu-78A265wPiO4-unsplash.jpg";
-import { unsplash_Api, getUnsplashImages } from "../services/api";
+import { searchUnsplashImages, getUnsplashImages } from "../services/api";
 
 function Home() {
   const [theme, setTheme] = useState("light");
@@ -57,7 +57,7 @@ function Home() {
 
   const search = async () => {
     setLoading(true);
-    const fetchedData = await unsplash_Api(searchPage, debouncedSearch);
+    const fetchedData = await searchUnsplashImages(searchPage, debouncedSearch);
     setSearchPagelimit(fetchedData.data.total_pages);
     const filteredData = fetchedData.data.results.map((item) => {
       return {
