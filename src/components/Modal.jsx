@@ -3,7 +3,10 @@ import likesWhite from "../assets/white_like.png";
 
 function Modal(props) {
   return (
-    <div className="fixed bg-black bg-opacity-30 inset-0 flex justify-center items-center z-10">
+    <div
+      data-test="modal"
+      className="fixed bg-black bg-opacity-30 inset-0 flex justify-center items-center z-10"
+    >
       <div className="relative flex flex-col justify-center w-[75vw] h-[50vh] md:w-[75vw] md:h-[50vh] xl:w-[50vw] shadow-2xl">
         <button
           onClick={props.closeModal}

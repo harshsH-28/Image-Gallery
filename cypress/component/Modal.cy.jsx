@@ -1,4 +1,4 @@
-import { Modal } from "../../src/components/Modal/Modal";
+import Modal from "../../src/components/Modal.jsx";
 
 const sampleData = {
   img: "lore ipsum image",
@@ -12,20 +12,27 @@ const sampleData = {
 
 describe("Modal Component Tests", () => {
   it("renders modal with provided data", () => {
-    cy.mount(<Modal closeModal={() => {}} data={sampleData} theme="light" />);
-    cy.get(".modal").should("exist");
-    cy.get(".modal img").should("have.attr", "src", sampleData.img);
-    cy.get(".modal .description").should("have.text", sampleData.description);
-    cy.get(".modal .download-button").should(
+    cy.mount(<Modal closeModal={() => {}} data={sampleData} theme="dark" />);
+    cy.get('[data-test="modal"]').should("exist");
+    cy.get("[data-test='modal'] img").should(
+      "have.attr",
+      "src",
+      sampleData.img
+    );
+    cy.get("[data-test='modal'] .description").should(
+      "have.text",
+      sampleData.description
+    );
+    cy.get("[data-test='modal'] .download-button").should(
       "have.attr",
       "href",
       sampleData.img_download
     );
-    cy.get(".modal .user-info .username").should(
+    cy.get("[data-test='modal'] .user-info .username").should(
       "have.text",
       `@${sampleData.username}`
     );
-    cy.get(".modal .likes-count").should(
+    cy.get("[data-test='modal'] .likes-count").should(
       "have.text",
       `${sampleData.likes} Likes`
     );
@@ -36,7 +43,7 @@ describe("Modal Component Tests", () => {
     cy.mount(
       <Modal closeModal={closeModalStub} data={sampleData} theme="light" />
     );
-    cy.get(".modal .close-button").click();
+    cy.get("[data-test='modal'] .close-button").click();
     cy.get("@closeModal").should("be.calledOnce");
   });
 
@@ -45,13 +52,13 @@ describe("Modal Component Tests", () => {
     cy.mount(
       <Modal closeModal={() => {}} data={dataWithoutDownload} theme="light" />
     );
-    cy.get(".modal .download-button").should("not.exist");
+    cy.get("[data-test='modal'] .download-button").should("not.exist");
   });
 
   it("changes theme appropriately", () => {
     cy.mount(<Modal closeModal={() => {}} data={sampleData} theme="light" />);
-    cy.get(".modal.dark").should("not.exist");
+    cy.get("[data-test='modal'] .dark").should("not.exist");
     cy.mount(<Modal closeModal={() => {}} data={sampleData} theme="dark" />);
-    cy.get(".modal.dark").should("exist");
+    cy.get("[data-test='modal'] .dark").should("exist");
   });
 });
