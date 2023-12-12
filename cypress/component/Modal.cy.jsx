@@ -1,13 +1,13 @@
 import { Modal } from "../../src/components/Modal/Modal";
 
 const sampleData = {
-  img: "path/to/image.jpg",
-  description: "Sample description",
-  img_download: "path/to/download",
-  userImg: "path/to/user/image.jpg",
-  user: "John Doe",
-  username: "john_doe",
-  likes: 10,
+  img: "lore ipsum image",
+  description: "lore ipsum",
+  img_download: "lorem ipsum download link",
+  userImg: "lore ipsum user image",
+  user: "Harsh Sharma",
+  username: "harshsH-28",
+  likes: 1000000000,
 };
 
 describe("Modal Component Tests", () => {
